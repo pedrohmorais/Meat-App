@@ -4,6 +4,7 @@ import { OrderService } from 'app/order/order.service';
 import { CartItem } from 'app/restaurant-detail/shopping-cart/cart-item';
 import {Order, OrderItem} from 'app/order/order.model';
 import { Router } from '@angular/router';
+import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'mt-order',
@@ -12,7 +13,9 @@ import { Router } from '@angular/router';
 })
 export class OrderComponent implements OnInit {
 
-  constructor(private orderService: OrderService,private router: Router) {}
+  constructor(private orderService: OrderService,
+              private router: Router,
+              private formBuilder: FormBuilder) {}
 
   paymentOptions: RadioOption[] = [
     {label: 'Dinheiro', value: 'MON' },
@@ -20,10 +23,40 @@ export class OrderComponent implements OnInit {
     {label: 'Ticket Refeição', value: 'REF' }
   ]
 
+  orderForm : FormGroup
+
   delivery: number = 8
   
+  emailPattern = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
+  numberPattern = /^[0-9]*$/
 
   ngOnInit() {
+    this.orderForm = this.formBuilder.group({
+      name: this.formBuilder.control('',[Validators.required,Validators.minLength(5)]),
+      email: this.formBuilder.control('',[Validators.required,Validators.minLength(5),Validators.pattern(this.emailPattern)]),
+      emailConfirmation : this.formBuilder.control('',[Validators.required,Validators.minLength(5),Validators.pattern(this.emailPattern)]),
+      address: this.formBuilder.control('',[Validators.required,Validators.minLength(5)]),
+      number: this.formBuilder.control('',[Validators.required,Validators.pattern(this.numberPattern)]),
+      optionalAddress: this.formBuilder.control(''),
+      paymentOption: this.formBuilder.control('',[Validators.required])
+    }, {validator: OrderComponent.equalsTo})
+  }
+
+  //validacoes adicionais
+  static equalsTo(group: AbstractControl) : {[key:string] : boolean} {
+    const email = group.get('email')
+    const emailConfirmation = group.get('emailConfirmation')
+
+    //valida se existem
+    if(!email || !emailConfirmation) {
+      return undefined
+    }
+    if(email.value !== emailConfirmation.value) {
+      //pode dar a chave que quiser
+      return {emailsNotMatch: true}
+    }
+
+    return undefined
   }
 
   itemsValue(): number {

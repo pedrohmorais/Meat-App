@@ -20,7 +20,7 @@ export class RestaurantDetailComponent implements OnInit {
     this.restaurantsService.restaurantById(this.route.snapshot.params['id'])
       .subscribe(restaurant => this.restaurant = restaurant)
 
-      console.log(this.restaurant)
+      //console.log(console.log(this.restaurant)
   }
 
 }

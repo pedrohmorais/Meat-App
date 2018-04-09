@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ContentChild , AfterContentInit } from '@angular/core';
-import { NgModel } from '@angular/forms';
+import { NgModel, FormControlName } from '@angular/forms';
 
 
 @Component({
@@ -13,9 +13,12 @@ export class InputComponent implements OnInit, AfterContentInit {
   @Input() errorMessage: string
 
   input: any
+  
 
   //coloca o conteudo html numa variavel interna, no caso foi o NgModel(input)  
   @ContentChild(NgModel) model : NgModel
+  //adiciona form control
+  @ContentChild(FormControlName) control : FormControlName
 
   constructor() { }
 
@@ -23,9 +26,10 @@ export class InputComponent implements OnInit, AfterContentInit {
   }
 
   ngAfterContentInit(){
-    this.input = this.model
+    //se usar control name, verificar também o control
+    this.input = this.model || this.control
     if(this.input === undefined) {
-      throw new Error('Esse componente precisa ser usado com uma diretiva ngModel')
+      throw new Error('Esse componente precisa ser usado com uma diretiva ngModel ou FormControlName')
     }
   }
 
