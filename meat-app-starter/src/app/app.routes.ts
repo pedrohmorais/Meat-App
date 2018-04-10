@@ -6,11 +6,9 @@ import { RestaurantsComponent } from 'app/restaurants/restaurants.component';
 import { RestaurantDetailComponent } from 'app/restaurant-detail/restaurant-detail.component';
 import { MenuComponent } from 'app/restaurant-detail/menu/menu.component';
 import { ReviewsComponent } from 'app/restaurant-detail/reviews/reviews.component';
-import { OrderComponent } from './order/order.component';
 
 export const ROUTES: Routes = [
     {path: '', component: HomeComponent},
-    {path: 'about', component: AboutComponent},
     {path: 'restaurants', component: RestaurantsComponent},
     {
         path: 'restaurants/:id', component: RestaurantDetailComponent,
@@ -20,6 +18,12 @@ export const ROUTES: Routes = [
             {path: 'reviews', component: ReviewsComponent}
         ]
     },
-    {path: 'order', component: OrderComponent},
-    {path: 'order-summary', component: OrderSummaryComponent}
+    //{path: 'order', component: OrderComponent},
+    {path: 'order', loadChildren: './order/order.module#OrderModule'},
+    {path: 'order-summary', component: OrderSummaryComponent},
+
+    //componente importado no root
+    //{path: 'about', component: AboutComponent},
+    //componente importado lazy loading usando loadChildren
+    {path: 'about', loadChildren: './about/about.module#AboutModule'},
 ]
